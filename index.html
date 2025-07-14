@@ -2,91 +2,73 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contacter G.voida</title>
-  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-  <script>
-    (function(){
-      emailjs.init("4EhJw2YMfXrhsNEKn"); // Ta clé publique
-    })();
-  </script>
+  <title>Contact G.voida</title>
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      margin: 40px;
-      background: #f8f9fa;
-    }
-    h1 {
-      color: #333;
-    }
-    form {
-      background: white;
-      padding: 20px;
-      max-width: 500px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    #status {
-      margin-top: 15px;
-      font-weight: bold;
-    }
+    body { font-family: system-ui, sans-serif; margin: 40px; background: #f8f9fa; }
+    form { background: white; padding: 20px; max-width: 500px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+    input, textarea { width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 5px; }
+    button { margin-top: 15px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:disabled { background: grey; cursor: not-allowed; }
+    p.alert { color: red; font-weight: bold; margin-top: 20px; display: none; }
   </style>
 </head>
 <body>
 
-  <h1>Contacter G.voida</h1>
+<h1>Contacter G.voida</h1>
 
-  <form id="contact-form">
-    <label for="name">Nom</label>
-    <input type="text" name="name" id="name" required />
+<form id="contact-form">
+  <label for="name">Nom</label>
+  <input type="text" name="name" id="name" required />
 
-    <label for="email">Email</label>
-    <input type="email" name="email" id="email" required />
+  <label for="email">Email</label>
+  <input type="email" name="email" id="email" required />
 
-    <label for="message">Message</label>
-    <textarea name="message" id="message" rows="5" required></textarea>
+  <label for="message">Message</label>
+  <textarea name="message" id="message" rows="5" required></textarea>
 
-    <button type="submit">Envoyer</button>
-  </form>
+  <button type="submit" id="submit-btn">Envoyer</button>
+</form>
 
-  <p id="status"></p>
+<p class="alert" id="alert-msg">⚠️ Le formulaire est temporairement fermé car la limite d’envois EmailJS a été atteinte.</p>
 
-  <script>
-    const form = document.getElementById("contact-form");
-    const status = document.getElementById("status");
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  // -------------------------
+  // CHANGE CETTE VARIABLE ICI
+  // true = formulaire désactivé
+  // false = formulaire actif
+  const formDisabled = true;
+  // -------------------------
 
-    form.addEventListener("submit", function(e) {
+  const form = document.getElementById('contact-form');
+  const inputs = form.querySelectorAll('input, textarea, button');
+  const alertMsg = document.getElementById('alert-msg');
+
+  // Initialisation EmailJS (remplace par ta clé publique)
+  emailjs.init("4EhJw2YMfXrhsNEKn");
+
+  if (formDisabled) {
+    // Désactiver tous les champs + bouton
+    inputs.forEach(el => el.disabled = true);
+    // Afficher le message d'alerte
+    alertMsg.style.display = 'block';
+  } else {
+    // Formulaire actif
+    alertMsg.style.display = 'none';
+
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
       emailjs.sendForm("service_e52327e", "template_r8rm75g", this)
         .then(() => {
-          status.innerText = "✅ Message envoyé à G.voida !";
+          alert('✅ Message envoyé à G.voida !');
           form.reset();
         })
-        .catch((error) => {
-          console.error(error);
-          status.innerText = "❌ Erreur lors de l'envoi.";
+        .catch(() => {
+          alert('❌ Erreur lors de l\'envoi.');
         });
     });
-  </script>
+  }
+</script>
 
 </body>
 </html>
