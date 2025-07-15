@@ -10,6 +10,7 @@
     button { margin-top: 15px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
     button:disabled { background: grey; cursor: not-allowed; }
     p.alert { color: red; font-weight: bold; margin-top: 20px; display: none; }
+    .error-message { color: red; margin-top: 10px; display: none; } /* Style pour les messages d'erreur */
   </style>
 </head>
 <body>
@@ -25,12 +26,11 @@
 
   <label for="message">Message</label>
   <textarea name="message" id="message" rows="5" required></textarea>
-
-  <button type="submit" id="submit-btn">Envoyer</button>
+  <p class="error-message" id="filter-error-message"></p> <button type="submit" id="submit-btn">Envoyer</button>
 </form>
 
 <p class="alert" id="alert-msg">
-  ⚠️ Vous pouvez faire la requête sur mon serveur Discord : 
+  ⚠️ Vous pouvez faire la requête sur mon serveur Discord :
   <a href="https://discord.gg/ye8MhVUdWU" target="_blank" rel="noopener noreferrer">https://discord.gg/ye8MhVUdWU</a>
 </p>
 
@@ -40,34 +40,174 @@
   // CHANGE CETTE VARIABLE ICI
   // true = formulaire désactivé
   // false = formulaire actif
-  const formDisabled = true;
+  const formDisabled = false; // Mettez à 'true' pour désactiver le formulaire complètement
   // -------------------------
 
   const form = document.getElementById('contact-form');
   const inputs = form.querySelectorAll('input, textarea, button');
   const alertMsg = document.getElementById('alert-msg');
+  const filterErrorMessage = document.getElementById('filter-error-message');
+  const submitBtn = document.getElementById('submit-btn');
 
   // Initialisation EmailJS (remplace par ta clé publique)
+  // Assurez-vous que "4EhJw2YMfXrhsNEKn" est bien votre PUBLIC_KEY EmailJS
   emailjs.init("4EhJw2YMfXrhsNEKn");
 
+  // --- PARAMÈTRES DE FILTRAGE ET DE "BANNISSEMENT" ---
+
+  // Liste noire de mots et expressions (en minuscules pour une meilleure comparaison)
+  // Ajoutez ici tous les mots ou expressions que vous souhaitez bloquer.
+  // Par exemple : "arnaque", "vente", "promo", "argent facile", etc.
+  const BLACKLIST_WORDS = [
+    "viagra",
+    "casino",
+    "publicite",
+    "offre speciale",
+    "sex", // Ou toute autre variation pertinente
+    "arnaque",
+    "bitcoin", // Pour les spams de crypto
+    "gagner de l'argent",
+    "credit rapide",
+    "gratuitement maintenant",
+    "appelle moi", // Si vous voulez éviter les demandes de contact direct
+    // Ajoutez vos propres mots ou expressions :
+    // "exemplemotinterdit",
+    // "autremotbloqué",
+  ];
+
+  const MAX_ATTEMPTS = 3; // Nombre maximum de tentatives échouées avant "ban"
+  const BAN_DURATION_MS = 3600000; // Durée du "ban" en millisecondes (ici 1 heure = 3600 * 1000)
+  const LS_KEY_ATTEMPTS = 'contactFormAttempts';
+  const LS_KEY_BAN_TIME = 'contactFormBanTime';
+
+  // --- FONCTIONS DE FILTRAGE ET DE BANNISSEMENT ---
+
+  /**
+   * Vérifie si le message contient un mot de la liste noire.
+   * @param {string} message Le contenu du message à vérifier.
+   * @returns {string|boolean} Le mot détecté ou false si aucun mot n'est trouvé.
+   */
+  function containsBlacklistedWord(message) {
+    const lowerCaseMessage = message.toLowerCase(); // Convertit le message en minuscules
+    for (const word of BLACKLIST_WORDS) {
+      // Crée une expression régulière pour trouver le mot entier (avec \b pour "word boundary")
+      // Par exemple, "con" ne bloquera pas "content", mais bien "con" seul.
+      const regex = new RegExp(`\\b${word}\\b`, 'g');
+      if (regex.test(lowerCaseMessage)) {
+        return word; // Retourne le mot interdit trouvé
+      }
+    }
+    return false; // Aucun mot de la liste noire n'a été trouvé
+  }
+
+  /**
+   * Vérifie si l'utilisateur est actuellement "banni".
+   * Si oui, désactive le formulaire et affiche un message.
+   * @returns {boolean} True si l'utilisateur est banni, false sinon.
+   */
+  function checkIfBanned() {
+    const banTime = localStorage.getItem(LS_KEY_BAN_TIME);
+    if (banTime && (Date.now() < parseInt(banTime) + BAN_DURATION_MS)) {
+      const remainingTime = Math.ceil((parseInt(banTime) + BAN_DURATION_MS - Date.now()) / 60000); // Minutes restantes
+      filterErrorMessage.textContent = `Vous avez effectué trop de tentatives non valides. Veuillez réessayer dans ${remainingTime} minutes.`;
+      filterErrorMessage.style.display = 'block';
+      inputs.forEach(el => el.disabled = true); // Désactive tous les champs du formulaire
+      submitBtn.disabled = true; // Désactive spécifiquement le bouton d'envoi
+      return true;
+    }
+    // Si l'utilisateur n'est plus banni ou si le temps est écoulé, on nettoie le localStorage
+    if (banTime && (Date.now() >= parseInt(banTime) + BAN_DURATION_MS)) {
+        resetFailedAttempts(); // Réinitialise les compteurs si le ban est terminé
+    }
+    return false;
+  }
+
+  /**
+   * Incrémente le compteur de tentatives échouées.
+   * Si le nombre max de tentatives est atteint, déclenche le "bannissement".
+   */
+  function incrementFailedAttempts() {
+    let attempts = parseInt(localStorage.getItem(LS_KEY_ATTEMPTS) || '0');
+    attempts++;
+    localStorage.setItem(LS_KEY_ATTEMPTS, attempts);
+    if (attempts >= MAX_ATTEMPTS) {
+      localStorage.setItem(LS_KEY_BAN_TIME, Date.now().toString()); // Enregistre l'heure du ban
+      localStorage.removeItem(LS_KEY_ATTEMPTS); // Réinitialise les tentatives après un ban
+      checkIfBanned(); // Active le mode "banni" immédiatement
+    }
+  }
+
+  /**
+   * Réinitialise le compteur de tentatives et l'état de "bannissement".
+   * Appelé après un envoi réussi ou si le temps de ban est écoulé.
+   */
+  function resetFailedAttempts() {
+    localStorage.removeItem(LS_KEY_ATTEMPTS);
+    localStorage.removeItem(LS_KEY_BAN_TIME);
+    filterErrorMessage.style.display = 'none'; // Cache le message d'erreur
+    inputs.forEach(el => el.disabled = false); // Réactive tous les champs
+    submitBtn.disabled = false; // Réactive le bouton d'envoi
+  }
+
+  // --- LOGIQUE PRINCIPALE DU FORMULAIRE ---
   if (formDisabled) {
-    // Désactiver tous les champs + bouton
+    // Si la variable formDisabled est à 'true', désactiver le formulaire et afficher l'alerte Discord
     inputs.forEach(el => el.disabled = true);
-    // Afficher le message d'alerte
     alertMsg.style.display = 'block';
   } else {
-    // Formulaire actif
+    // Si le formulaire est actif, masquer l'alerte initiale
     alertMsg.style.display = 'none';
 
+    // Vérifie si l'utilisateur est banni au chargement de la page
+    checkIfBanned();
+
     form.addEventListener('submit', function(e) {
-      e.preventDefault();
+      e.preventDefault(); // Empêche l'envoi par défaut du formulaire HTML
+
+      filterErrorMessage.style.display = 'none'; // Masque tout message d'erreur précédent
+
+      // Si le bouton est déjà désactivé (par un ban ou envoi en cours), ne rien faire
+      if (submitBtn.disabled) {
+          return;
+      }
+
+      const messageContent = document.getElementById('message').value;
+      const detectedBlacklistedWord = containsBlacklistedWord(messageContent);
+
+      if (detectedBlacklistedWord) {
+        // Si un mot de la liste noire est trouvé
+        filterErrorMessage.textContent = `Votre message contient un terme non autorisé ("${detectedBlacklistedWord}"). Veuillez le modifier.`;
+        filterErrorMessage.style.display = 'block';
+        incrementFailedAttempts(); // Incrémente les tentatives (compte comme une tentative non valide)
+        checkIfBanned(); // Vérifie si cette tentative déclenche un bannissement
+        return; // Arrête l'envoi du formulaire
+      }
+
+      // Si le message est valide (pas de mot blacklisté), procède à l'envoi via EmailJS
+      submitBtn.disabled = true; // Désactive le bouton pour éviter les envois multiples
+      submitBtn.textContent = 'Envoi en cours...'; // Met à jour le texte du bouton
+
       emailjs.sendForm("service_e52327e", "template_r8rm75g", this)
         .then(() => {
+          // Succès de l'envoi
           alert('✅ Message envoyé à G.voida !');
-          form.reset();
+          form.reset(); // Réinitialise les champs du formulaire
+          resetFailedAttempts(); // Réinitialise les tentatives après un envoi réussi
         })
-        .catch(() => {
-          alert('❌ Erreur lors de l\'envoi.');
+        .catch((error) => {
+          // Échec de l'envoi
+          console.error("Erreur EmailJS:", error); // Affiche l'erreur dans la console pour le débogage
+          alert('❌ Erreur lors de l\'envoi. Veuillez réessayer.');
+          incrementFailedAttempts(); // Incrémente les tentatives en cas d'erreur d'envoi
+          checkIfBanned(); // Vérifie si on doit bannir suite à cette erreur
+        })
+        .finally(() => {
+          // Cette partie s'exécute après .then ou .catch
+          // Si l'utilisateur n'est pas banni par l'échec, réactive le bouton
+          if (!checkIfBanned()) { // Vérifie à nouveau l'état du bannissement
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Envoyer';
+          }
         });
     });
   }
