@@ -2,115 +2,121 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Contact G.voida</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contactez G.voida - Formulaire sécurisé</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
+    /* Variables CSS pour une gestion facile des couleurs et ombres */
     :root {
-      --primary-color: #007bff; /* Bleu vibrant */
-      --primary-hover-color: #0056b3; /* Bleu plus foncé au survol */
+      --primary-color: #007bff; /* Bleu principal */
+      --primary-hover-color: #0056b3; /* Bleu au survol */
       --text-color: #343a40; /* Gris foncé pour le texte */
-      --background-color: #f0f2f5; /* Gris clair doux pour l'arrière-plan */
-      --card-background: #ffffff; /* Blanc pur pour les cartes */
-      --border-color: #ced4da; /* Gris clair pour les bordures */
-      --focus-shadow: rgba(0, 123, 255, 0.25); /* Ombre pour les champs en focus */
-      --error-color: #dc3545; /* Rouge pour les erreurs */
-      --shadow-light: rgba(0, 0, 0, 0.08); /* Ombre légère pour les éléments */
-      --shadow-medium: rgba(0, 0, 0, 0.12); /* Ombre moyenne */
+      --background-color: #f0f2f5; /* Fond clair de la page */
+      --card-background: #ffffff; /* Fond du formulaire */
+      --border-color: #ced4da; /* Couleur des bordures de champs */
+      --focus-shadow: rgba(0, 123, 255, 0.25); /* Ombre de focus des champs */
+      --error-color: #dc3545; /* Rouge pour les messages d'erreur */
+      --shadow-light: rgba(0, 0, 0, 0.08); /* Ombre légère */
     }
 
     body {
-      font-family: 'Inter', system-ui, sans-serif; /* Nouvelle police de caractères */
-      margin: 0; /* Supprime la marge par défaut du body */
-      padding: 40px 20px; /* Ajoute un padding pour l'espace */
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
       background: var(--background-color);
       color: var(--text-color);
       display: flex;
       flex-direction: column;
-      align-items: center; /* Centre le contenu horizontalement */
+      align-items: center; /* Centre horizontalement le contenu */
       min-height: 100vh; /* S'assure que le body prend toute la hauteur de la vue */
-      box-sizing: border-box; /* Inclut le padding dans la hauteur/largeur totale */
+      box-sizing: border-box; /* Inclut padding dans la taille totale */
+      line-height: 1.6; /* Améliore la lisibilité du texte */
     }
 
     h1 {
       color: var(--primary-color);
       margin-bottom: 30px;
-      font-weight: 600; /* Plus de gras pour le titre */
+      font-weight: 700; /* Plus de gras pour le titre */
       text-align: center;
+      font-size: 2.2rem; /* Taille plus grande pour le titre */
     }
 
     form {
       background: var(--card-background);
-      padding: 35px; /* Plus de padding pour l'espace intérieur */
-      max-width: 550px; /* Augmente légèrement la largeur maximale */
-      width: 100%; /* S'assure qu'il prend toute la largeur disponible */
-      border-radius: 12px; /* Bords plus arrondis */
-      box-shadow: 0 6px 15px var(--shadow-light); /* Ombre plus prononcée mais douce */
-      border: 1px solid #e9ecef; /* Bordure légère */
-      box-sizing: border-box; /* Important pour le padding */
+      padding: 35px;
+      max-width: 550px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px var(--shadow-light);
+      border: 1px solid #e9ecef;
+      box-sizing: border-box;
     }
 
     label {
-      display: block; /* Chaque label sur une nouvelle ligne */
-      margin-top: 20px; /* Plus d'espace entre les labels */
-      margin-bottom: 8px; /* Espace sous le label */
-      font-weight: 600; /* Texte des labels en gras */
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-weight: 600;
       color: var(--text-color);
+      font-size: 1.05rem; /* Taille légèrement plus grande pour les labels */
     }
 
     input,
     textarea {
-      width: calc(100% - 22px); /* Ajuste la largeur avec le padding */
-      padding: 12px; /* Plus de padding pour les champs */
+      width: calc(100% - 24px); /* Ajustement pour padding de 12px de chaque côté */
+      padding: 12px;
       border: 1px solid var(--border-color);
-      border-radius: 8px; /* Bords arrondis pour les champs */
-      font-size: 1rem; /* Taille de police lisible */
+      border-radius: 8px;
+      font-size: 1rem;
       color: var(--text-color);
-      background-color: #f8f9fa; /* Fond légèrement grisé pour les champs */
-      transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Transition douce */
+      background-color: #f8f9fa;
+      transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     }
 
     input:focus,
     textarea:focus {
-      border-color: var(--primary-color); /* Bordure bleue au focus */
-      box-shadow: 0 0 0 3px var(--focus-shadow); /* Ombre au focus */
-      outline: none; /* Supprime l'outline par défaut du navigateur */
-      background-color: var(--card-background); /* Reviens au blanc au focus */
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px var(--focus-shadow);
+      outline: none;
+      background-color: var(--card-background);
     }
 
     textarea {
-      resize: vertical; /* Permet uniquement le redimensionnement vertical */
-      min-height: 100px; /* Hauteur minimale pour le textarea */
+      resize: vertical; /* Permet le redimensionnement vertical */
+      min-height: 100px;
+      max-height: 300px; /* Limite la hauteur maximale */
     }
 
     button {
-      margin-top: 30px; /* Plus d'espace au-dessus du bouton */
-      padding: 14px 28px; /* Plus de padding pour le bouton */
+      margin-top: 30px;
+      padding: 14px 28px;
       background: var(--primary-color);
       color: white;
       border: none;
-      border-radius: 8px; /* Bords arrondis */
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 1.1rem; /* Taille de police plus grande */
-      font-weight: 600; /* Gras pour le bouton */
+      font-size: 1.1rem;
+      font-weight: 600;
       transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
-      width: 100%; /* Bouton pleine largeur */
+      width: 100%;
+      display: block; /* S'assure que le bouton prend toute la largeur */
     }
 
     button:hover:not(:disabled) {
       background: var(--primary-hover-color);
-      transform: translateY(-2px); /* Léger effet de soulèvement au survol */
-      box-shadow: 0 4px 10px var(--shadow-light); /* Ombre au survol */
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px var(--shadow-light);
     }
 
     button:active:not(:disabled) {
-      transform: translateY(0); /* Effet de clic */
+      transform: translateY(0);
       box-shadow: none;
     }
 
     button:disabled {
-      background: #adb5bd; /* Gris plus clair pour désactivé */
+      background: #adb5bd;
       cursor: not-allowed;
       box-shadow: none;
       transform: none;
@@ -119,12 +125,12 @@
     p.alert {
       color: var(--error-color);
       font-weight: 600;
-      margin-top: 25px; /* Plus d'espace */
+      margin-top: 25px;
       text-align: center;
       font-size: 1.05rem;
       padding: 15px;
       border: 1px solid var(--error-color);
-      background-color: rgba(220, 53, 69, 0.08); /* Fond léger pour l'alerte */
+      background-color: rgba(220, 53, 69, 0.08);
       border-radius: 8px;
       max-width: 550px;
       width: 100%;
@@ -132,13 +138,13 @@
     }
 
     p.alert a {
-      color: var(--error-color); /* Lien dans la même couleur que l'alerte */
+      color: var(--error-color);
       text-decoration: underline;
       font-weight: 700;
     }
 
     p.alert a:hover {
-      color: #a71d2a; /* Rouge plus foncé au survol */
+      color: #a71d2a;
     }
 
     .error-message {
@@ -147,7 +153,7 @@
       margin-top: 15px;
       font-size: 0.95rem;
       text-align: center;
-      display: none; /* Toujours caché par défaut, JavaScript le rend visible */
+      display: none;
     }
   </style>
 </head>
@@ -157,200 +163,223 @@
 
 <form id="contact-form">
   <label for="name">Nom</label>
-  <input type="text" name="name" id="name" required />
+  <input type="text" name="name" id="name" required aria-label="Votre nom complet" />
 
   <label for="email">Email</label>
-  <input type="email" name="email" id="email" required />
+  <input type="email" name="email" id="email" required aria-label="Votre adresse email" />
 
   <label for="message">Message</label>
-  <textarea name="message" id="message" rows="5" required></textarea>
-  <p class="error-message" id="filter-error-message"></p>
+  <textarea name="message" id="message" rows="5" required aria-label="Votre message"></textarea>
+  <p class="error-message" id="filter-error-message" role="alert" aria-live="polite"></p>
 
   <button type="submit" id="submit-btn">Envoyer</button>
 </form>
 
-<p class="alert" id="alert-msg">
+<p class="alert" id="alert-msg" role="alert" aria-live="polite">
   ⚠️ Le formulaire est actuellement désactivé. Vous pouvez faire la requête sur mon serveur Discord :
   <a href="https://discord.gg/ye8MhVUdWU" target="_blank" rel="noopener noreferrer">https://discord.gg/ye8MhVUdWU</a>
 </p>
 
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
-  // -------------------------
-  // CHANGE CETTE VARIABLE ICI
-  // true = formulaire désactivé
-  // false = formulaire actif
-  const formDisabled = false; // Mettez à 'true' pour désactiver le formulaire complètement
-  // -------------------------
+  // ----------------------------------------------------
+  // CONFIGURATION DU FORMULAIRE ET DES SYSTÈMES DE SÉCURITÉ
+  // ----------------------------------------------------
 
+  // true = formulaire désactivé manuellement (utile pour maintenance)
+  // false = formulaire actif
+  const formDisabledManually = false;
+
+  // Clés EmailJS (à remplacer par VOS VRAIES CLÉS PUBLIQUES et IDs)
+  const EMAILJS_PUBLIC_KEY = "4EhJw2YMfXrhsNEKn"; // Votre clé publique EmailJS
+  const EMAILJS_SERVICE_ID = "service_e52327e"; // L'ID de votre service EmailJS
+  const EMAILJS_TEMPLATE_ID = "template_r8rm75g"; // L'ID de votre template EmailJS
+
+  // Liste noire de mots et expressions (en minuscules pour une comparaison insensible à la casse)
+  // AJOUTEZ, MODIFIEZ OU SUPPRIMEZ LES TERMES SELON VOS BESOINS !
+  // Pensez aux synonymes, fautes de frappe courantes et variations.
+  const BLACKLIST_WORDS = [
+    // Termes de spam/publicité/arnaque
+    "viagra", "casino", "publicite", "offre speciale", "arnaque", "bitcoin",
+    "gagner de l'argent", "credit rapide", "gratuitement maintenant",
+    "promotion", "rabais", "opportunite d'affaire", "investissement",
+    "cliquez ici", "urgent", "gagnant", "felicitations", "lotterie",
+
+    // Insultes et termes offensants (Exemples, à adapter pour votre contexte !)
+    "putain", "connard", "connasse", "salop", "salope", "merde", "encule",
+    "pute", "pd", "tg", "ta gueule", "casse couille", "raciste", "nazi",
+    "suce", "bite", "couille", "foutre", "chier", "crevard", "bouffon",
+    "conard", "idiot", "debile", "imbecile", "abruti", "imbécile", "débile",
+    "stupide", "abruti", "ordure", "vermine", "batard", "batarde", "sale",
+    "espece de", // Pour détecter "espèce de connard" par exemple
+    "grosse", // Peut être utilisé dans un contexte insultant
+    "froc", // familier vulgaire
+    "caca", "pipi", // Pour les formes plus infantiles ou dégradantes
+    "idiote", "conne", "con", // Pluriel et formes féminines
+    // Ajoutez ici des termes spécifiques à votre domaine ou que vous avez déjà rencontrés
+  ];
+
+  const MAX_ATTEMPTS = 3; // Nombre maximum de tentatives non valides avant le "bannissement"
+  const BAN_DURATION_MS = 3600000; // Durée du "bannissement" en millisecondes (1 heure)
+  const LS_KEY_ATTEMPTS = 'contactFormAttempts'; // Clé localStorage pour le compteur de tentatives
+  const LS_KEY_BAN_TIME = 'contactFormBanTime'; // Clé localStorage pour l'heure de début du "ban"
+
+  // ----------------------------------------------------
+  // RÉFÉRENCES AUX ÉLÉMENTS DU DOM
+  // ----------------------------------------------------
   const form = document.getElementById('contact-form');
   const inputs = form.querySelectorAll('input, textarea, button');
   const alertMsg = document.getElementById('alert-msg');
   const filterErrorMessage = document.getElementById('filter-error-message');
   const submitBtn = document.getElementById('submit-btn');
 
-  // Initialisation EmailJS (remplace par ta clé publique)
-  // Assurez-vous que "4EhJw2YMfXrhsNEKn" est bien votre PUBLIC_KEY EmailJS
-  emailjs.init("4EhJw2YMfXrhsNEKn");
+  // ----------------------------------------------------
+  // INITIALISATION EMAILJS
+  // ----------------------------------------------------
+  emailjs.init(EMAILJS_PUBLIC_KEY);
 
-  // --- PARAMÈTRES DE FILTRAGE ET DE "BANNISSEMENT" ---
-
-  // Liste noire de mots et expressions (en minuscules pour une meilleure comparaison)
-  // Ajoutez ici tous les mots ou expressions que vous souhaitez bloquer.
-  // Par exemple : "arnaque", "vente", "promo", "argent facile", etc.
-  const BLACKLIST_WORDS = [
-    "viagra",
-    "casino",
-    "publicite",
-    "offre speciale",
-    "sex",
-    "arnaque",
-    "bitcoin",
-    "gagner de l'argent",
-    "credit rapide",
-    "gratuitement maintenant",
-    "appelle moi",
-    // Ajoutez vos propres mots ou expressions :
-    // "exemplemotinterdit",
-    // "autremotbloqué",
-  ];
-
-  const MAX_ATTEMPTS = 3; // Nombre maximum de tentatives échouées avant "ban"
-  const BAN_DURATION_MS = 3600000; // Durée du "ban" en millisecondes (ici 1 heure = 3600 * 1000)
-  const LS_KEY_ATTEMPTS = 'contactFormAttempts';
-  const LS_KEY_BAN_TIME = 'contactFormBanTime';
-
-  // --- FONCTIONS DE FILTRAGE ET DE BANNISSEMENT ---
+  // ----------------------------------------------------
+  // FONCTIONS DE SÉCURITÉ ET DE GESTION DU FORMULAIRE
+  // ----------------------------------------------------
 
   /**
-   * Vérifie si le message contient un mot de la liste noire.
+   * Vérifie si le message contient un mot ou une expression de la liste noire.
+   * La comparaison est insensible à la casse et vérifie les mots entiers.
    * @param {string} message Le contenu du message à vérifier.
-   * @returns {string|boolean} Le mot détecté ou false si aucun mot n'est trouvé.
+   * @returns {string|boolean} Le mot/expression détecté ou false si aucun n'est trouvé.
    */
   function containsBlacklistedWord(message) {
-    const lowerCaseMessage = message.toLowerCase(); // Convertit le message en minuscules
+    const lowerCaseMessage = message.toLowerCase();
     for (const word of BLACKLIST_WORDS) {
-      // Crée une expression régulière pour trouver le mot entier (avec \b pour "word boundary")
-      // Par exemple, "con" ne bloquera pas "content", mais bien "con" seul.
+      // Crée une expression régulière pour trouver le mot entier (\b)
+      // Prend en compte les espaces, ponctuations, ou début/fin de chaîne
       const regex = new RegExp(`\\b${word}\\b`, 'g');
       if (regex.test(lowerCaseMessage)) {
-        return word; // Retourne le mot interdit trouvé
+        return word; // Retourne le mot interdit trouvé pour le message d'erreur
       }
     }
-    return false; // Aucun mot de la liste noire n'a été trouvé
+    return false;
   }
 
   /**
-   * Vérifie si l'utilisateur est actuellement "banni".
-   * Si oui, désactive le formulaire et affiche un message.
+   * Vérifie si l'utilisateur est actuellement "banni" via localStorage.
+   * Désactive le formulaire et affiche un message si c'est le cas.
    * @returns {boolean} True si l'utilisateur est banni, false sinon.
    */
   function checkIfBanned() {
     const banTime = localStorage.getItem(LS_KEY_BAN_TIME);
-    if (banTime && (Date.now() < parseInt(banTime) + BAN_DURATION_MS)) {
-      const remainingTime = Math.ceil((parseInt(banTime) + BAN_DURATION_MS - Date.now()) / 60000); // Minutes restantes
-      filterErrorMessage.textContent = `Vous avez effectué trop de tentatives non valides. Veuillez réessayer dans ${remainingTime} minutes.`;
+    const currentTime = Date.now();
+
+    if (banTime && (currentTime < parseInt(banTime) + BAN_DURATION_MS)) {
+      const timeLeftMs = (parseInt(banTime) + BAN_DURATION_MS) - currentTime;
+      const remainingMinutes = Math.ceil(timeLeftMs / 60000); // Convertit en minutes
+      filterErrorMessage.textContent = `Trop de tentatives non valides. Veuillez réessayer dans ${remainingMinutes} minute(s).`;
       filterErrorMessage.style.display = 'block';
-      inputs.forEach(el => el.disabled = true); // Désactive tous les champs du formulaire
-      submitBtn.disabled = true; // Désactive spécifiquement le bouton d'envoi
+      inputs.forEach(el => el.disabled = true);
+      submitBtn.disabled = true;
       return true;
     }
-    // Si l'utilisateur n'est plus banni ou si le temps est écoulé, on nettoie le localStorage
-    if (banTime && (Date.now() >= parseInt(banTime) + BAN_DURATION_MS)) {
-        resetFailedAttempts(); // Réinitialise les compteurs si le ban est terminé
+    // Si le ban est expiré, réinitialise les compteurs
+    if (banTime && (currentTime >= parseInt(banTime) + BAN_DURATION_MS)) {
+        resetFailedAttempts();
     }
     return false;
   }
 
   /**
    * Incrémente le compteur de tentatives échouées.
-   * Si le nombre max de tentatives est atteint, déclenche le "bannissement".
+   * Déclenche le bannissement si le seuil MAX_ATTEMPTS est atteint.
    */
   function incrementFailedAttempts() {
     let attempts = parseInt(localStorage.getItem(LS_KEY_ATTEMPTS) || '0');
     attempts++;
-    localStorage.setItem(LS_KEY_ATTEMPTS, attempts);
+    localStorage.setItem(LS_KEY_ATTEMPTS, attempts.toString()); // Stocke comme string
     if (attempts >= MAX_ATTEMPTS) {
-      localStorage.setItem(LS_KEY_BAN_TIME, Date.now().toString()); // Enregistre l'heure du ban
-      localStorage.removeItem(LS_KEY_ATTEMPTS); // Réinitialise les tentatives après un ban
-      checkIfBanned(); // Active le mode "banni" immédiatement
+      localStorage.setItem(LS_KEY_BAN_TIME, Date.now().toString());
+      localStorage.removeItem(LS_KEY_ATTEMPTS); // Réinitialise le compteur après un ban
+      checkIfBanned(); // Active l'état de ban immédiatement
     }
   }
 
   /**
-   * Réinitialise le compteur de tentatives et l'état de "bannissement".
+   * Réinitialise le compteur de tentatives et l'état de bannissement.
    * Appelé après un envoi réussi ou si le temps de ban est écoulé.
    */
   function resetFailedAttempts() {
     localStorage.removeItem(LS_KEY_ATTEMPTS);
     localStorage.removeItem(LS_KEY_BAN_TIME);
-    filterErrorMessage.style.display = 'none'; // Cache le message d'erreur
-    inputs.forEach(el => el.disabled = false); // Réactive tous les champs
-    submitBtn.disabled = false; // Réactive le bouton d'envoi
+    filterErrorMessage.style.display = 'none';
+    // Réactive les champs seulement si le formulaire n'est pas désactivé manuellement
+    if (!formDisabledManually) {
+        inputs.forEach(el => el.disabled = false);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Envoyer'; // Remet le texte original
+    }
   }
 
-  // --- LOGIQUE PRINCIPALE DU FORMULAIRE ---
-  if (formDisabled) {
-    // Si la variable formDisabled est à 'true', désactiver le formulaire et afficher l'alerte Discord
+  // ----------------------------------------------------
+  // LOGIQUE PRINCIPALE AU CHARGEMENT DE LA PAGE
+  // ----------------------------------------------------
+  if (formDisabledManually) {
+    // Si le formulaire est désactivé manuellement, tous les champs sont désactivés
     inputs.forEach(el => el.disabled = true);
-    alertMsg.style.display = 'block';
+    alertMsg.style.display = 'block'; // Affiche le message d'alerte Discord
   } else {
-    // Si le formulaire est actif, masquer l'alerte initiale
+    // Le formulaire est actif, masquer l'alerte initiale si présente
     alertMsg.style.display = 'none';
-
-    // Vérifie si l'utilisateur est banni au chargement de la page
+    // Vérifie si l'utilisateur est déjà banni au chargement de la page
     checkIfBanned();
-
-    form.addEventListener('submit', function(e) {
-      e.preventDefault(); // Empêche l'envoi par défaut du formulaire HTML
-
-      filterErrorMessage.style.display = 'none'; // Masque tout message d'erreur précédent
-
-      // Si le bouton est déjà désactivé (par un ban ou envoi en cours), ne rien faire
-      if (submitBtn.disabled) {
-          return;
-      }
-
-      const messageContent = document.getElementById('message').value;
-      const detectedBlacklistedWord = containsBlacklistedWord(messageContent);
-
-      if (detectedBlacklistedWord) {
-        // Si un mot de la liste noire est trouvé
-        filterErrorMessage.textContent = `Votre message contient un terme non autorisé ("${detectedBlacklistedWord}"). Veuillez le modifier.`;
-        filterErrorMessage.style.display = 'block';
-        incrementFailedAttempts(); // Incrémente les tentatives (compte comme une tentative non valide)
-        checkIfBanned(); // Vérifie si cette tentative déclenche un bannissement
-        return; // Arrête l'envoi du formulaire
-      }
-
-      // Si le message est valide (pas de mot blacklisté), procède à l'envoi via EmailJS
-      submitBtn.disabled = true; // Désactive le bouton pour éviter les envois multiples
-      submitBtn.textContent = 'Envoi en cours...'; // Met à jour le texte du bouton
-
-      emailjs.sendForm("service_e52327e", "template_r8rm75g", this)
-        .then(() => {
-          // Succès de l'envoi
-          alert('✅ Message envoyé à G.voida !');
-          form.reset(); // Réinitialise les champs du formulaire
-          resetFailedAttempts(); // Réinitialise les tentatives après un envoi réussi
-        })
-        .catch((error) => {
-          // Échec de l'envoi
-          console.error("Erreur EmailJS:", error); // Affiche l'erreur dans la console pour le débogage
-          alert('❌ Erreur lors de l\'envoi. Veuillez réessayer.');
-          incrementFailedAttempts(); // Incrémente les tentatives en cas d'erreur d'envoi
-          checkIfBanned(); // Vérifie si on doit bannir suite à cette erreur
-        })
-        .finally(() => {
-          // Cette partie s'exécute après .then ou .catch
-          // Si l'utilisateur n'est pas banni par l'échec, réactive le bouton
-          if (!checkIfBanned()) { // Vérifie à nouveau l'état du bannissement
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Envoyer';
-          }
-        });
-    });
   }
+
+  // ----------------------------------------------------
+  // ÉCOUTEUR D'ÉVÉNEMENT POUR LA SOUMISSION DU FORMULAIRE
+  // ----------------------------------------------------
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault(); // Empêche l'envoi par défaut du formulaire
+
+    filterErrorMessage.style.display = 'none'; // Masque tout message d'erreur précédent
+
+    // Vérifie si le bouton est désactivé (indique un ban ou un envoi en cours)
+    if (submitBtn.disabled) {
+        return; // Ne fait rien si le formulaire est déjà bloqué
+    }
+
+    const messageContent = document.getElementById('message').value;
+    const detectedWord = containsBlacklistedWord(messageContent);
+
+    if (detectedWord) {
+      // Un mot de la liste noire a été trouvé
+      filterErrorMessage.textContent = `Votre message contient un terme non autorisé ("${detectedWord}"). Veuillez le modifier.`;
+      filterErrorMessage.style.display = 'block';
+      incrementFailedAttempts(); // Incrémente les tentatives non valides
+      checkIfBanned(); // Vérifie si cette tentative déclenche un bannissement
+      return; // Arrête l'envoi
+    }
+
+    // Si le message est jugé valide, on procède à l'envoi via EmailJS
+    submitBtn.disabled = true; // Désactive le bouton pour éviter les envois multiples
+    submitBtn.textContent = 'Envoi en cours...'; // Indique l'état d'envoi
+
+    try {
+      // Tentative d'envoi du formulaire via EmailJS
+      await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, this);
+      alert('✅ Message envoyé à G.voida !');
+      form.reset(); // Réinitialise tous les champs du formulaire
+      resetFailedAttempts(); // Réinitialise les compteurs après un succès
+    } catch (error) {
+      // Gestion des erreurs d'envoi d'EmailJS
+      console.error("Erreur lors de l'envoi du message via EmailJS :", error);
+      alert('❌ Erreur lors de l\'envoi. Veuillez réessayer.');
+      incrementFailedAttempts(); // Incrémente les tentatives en cas d'erreur EmailJS
+      checkIfBanned(); // Vérifie si cette erreur déclenche un bannissement
+    } finally {
+      // Quoi qu'il arrive (succès ou échec), on réactive le bouton si pas banni
+      if (!checkIfBanned()) { // Vérifie à nouveau l'état de bannissement
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Envoyer';
+      }
+    }
+  });
 </script>
 
 </body>
