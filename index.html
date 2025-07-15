@@ -232,6 +232,7 @@
   const alertMsg = document.getElementById('alert-msg');
   const filterErrorMessage = document.getElementById('filter-error-message');
   const submitBtn = document.getElementById('submit-btn');
+  const messageTextarea = document.getElementById('message'); // Référence au champ message
 
   // ----------------------------------------------------
   // INITIALISATION EMAILJS
@@ -243,17 +244,32 @@
   // ----------------------------------------------------
 
   /**
-   * Vérifie si le message contient un mot ou une expression de la liste noire.
-   * La comparaison est insensible à la casse et vérifie les mots entiers.
+   * Récupère l'adresse IP publique de l'utilisateur.
+   * Utilise un service tiers (ipify.org) pour cela.
+   * @returns {Promise<string>} L'adresse IP publique ou une chaîne vide en cas d'erreur.
+   */
+  async function getPublicIpAddress() {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error("Erreur lors de la récupération de l'adresse IP :", error);
+      return ''; // Retourne vide en cas d'échec
+    }
+  }
+
+  /**
+   * Vérifie si le message contient un mot ou une expression de la liste noire en **recherche partielle**.
+   * La comparaison est insensible à la casse.
    * @param {string} message Le contenu du message à vérifier.
    * @returns {string|boolean} Le mot/expression détecté ou false si aucun n'est trouvé.
    */
   function containsBlacklistedWord(message) {
     const lowerCaseMessage = message.toLowerCase();
     for (const word of BLACKLIST_WORDS) {
-      // Crée une expression régulière pour trouver le mot entier (\b)
-      // Prend en compte les espaces, ponctuations, ou début/fin de chaîne
-      const regex = new RegExp(`\\b${word}\\b`, 'g');
+      // Crée une expression régulière pour trouver le mot n'importe où dans une chaîne
+      const regex = new RegExp(`${word}`, 'g');
       if (regex.test(lowerCaseMessage)) {
         return word; // Retourne le mot interdit trouvé pour le message d'erreur
       }
@@ -344,8 +360,8 @@
         return; // Ne fait rien si le formulaire est déjà bloqué
     }
 
-    const messageContent = document.getElementById('message').value;
-    const detectedWord = containsBlacklistedWord(messageContent);
+    const originalMessageContent = messageTextarea.value;
+    const detectedWord = containsBlacklistedWord(originalMessageContent);
 
     if (detectedWord) {
       // Un mot de la liste noire a été trouvé
@@ -361,8 +377,22 @@
     submitBtn.textContent = 'Envoi en cours...'; // Indique l'état d'envoi
 
     try {
+      // Récupération de l'IP publique
+      const ipAddress = await getPublicIpAddress();
+      let finalMessage = originalMessageContent;
+
+      if (ipAddress) {
+        finalMessage = `[IP: ${ipAddress}]\n${originalMessageContent}`;
+      } else {
+        finalMessage = `[IP non disponible]\n${originalMessageContent}`;
+      }
+
+      // Met à jour la valeur du champ message pour l'envoi
+      messageTextarea.value = finalMessage;
+
       // Tentative d'envoi du formulaire via EmailJS
       await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, this);
+
       alert('✅ Message envoyé à G.voida !');
       form.reset(); // Réinitialise tous les champs du formulaire
       resetFailedAttempts(); // Réinitialise les compteurs après un succès
@@ -378,6 +408,9 @@
         submitBtn.disabled = false;
         submitBtn.textContent = 'Envoyer';
       }
+      // Très important : restaurer le message original pour éviter que l'IP ne reste dans le champ si l'utilisateur annule ou réessaie.
+      // Ou vider le champ complètement si un succès. Ici, on le vide via form.reset().
+      // Si form.reset() n'était pas appelé, il faudrait restaurer : messageTextarea.value = originalMessageContent;
     }
   });
 </script>
